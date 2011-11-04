@@ -1,0 +1,67 @@
+This document tries to design a new API for the Lua scripting interface
+for bots. This API is based on the old API, but replaces ugly functions
+and provides a more sophisticated way to implement serving behaviour.
+
+The main difference of the new API is, that the bot is always programmed
+for the left side. If the controlled blob is actually on the other side,
+the API converts all values automatically.
+
+These are the available function:
+
+left() : moves one step left
+
+right() : moves one step right
+
+jump() : presses jump key
+
+moveto(number) : moves to the given position with a small buffer
+
+touches() : Number of own ball touches since last ball exchange.
+
+launched() : Tells whether the player is jumping at the moment.
+
+estimate(): Estimated impact point of the ball, without collision
+
+estimx(number) : Estimates ball x component for n timesteps
+estimy(number) : Estimates ball y component for n timesteps
+
+
+ballx() : x component of the ball position
+
+bally() : y component of the ball position
+
+bspeedx() : x component of the ball velocity
+
+bspeedy() : y component of the ball velocity
+
+posx() : x component of own position
+
+posy() : y component of own position
+
+oppx() : x component of opponent position
+
+oppy() : y component of opponent position
+
+debug(number) : Prints a number to stderr for debugging purposes
+
+getScore() : own score
+
+getOppScore() : opponent's score
+
+getScoreToWin() : score needed to win the match
+
+getGameTime(): time the game is running (for bots simulating exhaustion)
+
+All functions of the lua math library are also available.
+You can find their documentation at:
+http://www.lua.org/manual/5.1/manual.html#5.6
+
+
+Scripts MUST provide these entry point:
+
+function OnServe(ballready) : Called when the ball went down and the controlled
+	blob has to serve it next. The boolean parameter is true when the ball
+	is already placed.
+function OnOpponentServe() : Called after balldown when the opponent has to
+				serve the next ball
+function OnGame() : Called during the normal game

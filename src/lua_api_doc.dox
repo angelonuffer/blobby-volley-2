@@ -1,0 +1,508 @@
+/* This file contains the documentation of the blobby volley lua bot api
+in a form readable by doxygen for generating a clearer documentation.
+As doxygen is not capable of parsing lua source code, the function 
+declarations are in C++ syntax, providing parameter and return types,
+too (in contrast to lua functions which would be unable to define
+type inforamtion) */
+
+// ----------------------------------------------------------
+// |		documentation of the api function set           |
+// ----------------------------------------------------------
+
+/*! \defgroup lua_api API Documentation
+		Here you find the documentation of the functions offered
+		by Blobby Volley's lua interface for scripting a bot.
+		For each function you get to know what it does, which 
+		parameters are expected and which values are returned.
+		This documentation is subdivided into several function 
+		groups:
+		\li	Functions for input simulation: \ref command_func "Input"
+		\li Functions for getting data: \ref ball_func "Ball Information", 
+										\ref blobby_func "Blobby Information",
+										\ref game_status_func "Game Status"
+		\li Estimation/Calculation functions: \ref estim_func "Estimation/Calculation"
+		
+		All functions of the lua math library are also available.
+		You can find their documentation at:
+		http://www.lua.org/manual/5.1/manual.html#5.6 \n
+		
+		Besides these functions that are provided by Blobby Volley,
+		each script can define the functions listed under \ref script_func "Script Functions".
+		
+		Note that some of them are required to get your bot
+		working.
+		
+		In addition to these functions, the Blobby Volley 2 Lua API 
+		provides a lot of preset constants to simplify bot
+		development and make adaption to new circumstances
+		(e.g. different fieldsize, gravity) easier if that gets implemented.
+		
+		\attention
+		Remember that Lua is \b not able to declare a variables as const. 
+		Thus, it IS possible to change the value of these constants.  
+		
+		
+	@{
+*/
+
+// ----------------------------------------------------------
+// 						other
+// ----------------------------------------------------------
+
+/*! \brief debugging
+	\details prints \p num to the debugging output (stderr)
+	\ingroup lua_api
+*/
+void debug(float num);
+
+// ----------------------------------------------------------
+// 				input performing functions
+// ----------------------------------------------------------
+
+/*! @{
+	\anchor command_func
+	\name Input Functions 
+*/
+
+//!	\brief step to the left
+void left();
+//!	\brief step to the right
+void right();
+/*!	\brief simulate jump key
+	\details Simulates pressing the jump key, so a first call causes the
+			blobby to jump whereas successive calls (in the next time steps)
+			make the jump higher
+*/
+void jump();
+
+/*! \brief Move to position
+	\details moves to a given position, using a small buffer to avoid 
+			whobbling around the target
+	\param target destination
+*/
+void moveto(int target);
+
+//! @}
+
+// ----------------------------------------------------------
+//					 ball information querying
+// ----------------------------------------------------------
+
+/*! @{
+	\anchor ball_func
+	\name Ball Information
+	This set of functions allows the script to query information about \n
+	ball position, velocity and the number of touches done by the bot.
+*/
+
+
+/*! \brief get number of touches
+	\details returns the number of touches the player had made since
+			the opponend had touched the ball last.
+*/
+int touches();
+
+//! \brief x component of ball position
+float ballx();
+//! \brief y component of ball position
+float bally();
+//! \brief x component of ball velocity
+float bspeedx();
+//! \brief y component of ball velocity
+float bspeedy();
+
+//! @}
+
+// ----------------------------------------------------------
+//				 blob information querying
+// ----------------------------------------------------------
+
+/*! @{
+	\anchor blobby_func
+	\name Blobby Information
+*/
+
+//! \brief is blobby launched
+//! \return returns true if blobby doesn't stand on the ground
+bool launched();
+/*! \brief x component of blobby position
+	\details returns the x component of the middle of the blobby
+	\sa oppx(), posy()
+*/
+float posx();
+/*! \brief y component of blobby position
+	\details returns the y component of the middle of the blobby, 
+			i.e. the blobby's top minus half of \ref CONST_BLOBBY_HEIGHT.
+	\sa oppy(), posx()
+*/
+float posy();
+/*! \brief x component of enemy position
+	\details returns the x component of the middle of the enemy
+	\sa posx(), oppy()
+*/
+float oppx();
+/*! \brief y component of enemy position
+	\details returns the y component of the middle of the enemy, 
+			i.e. the enemy's top minus half of \ref CONST_BLOBBY_HEIGHT.
+	\sa posy(), oppy()
+*/
+float oppy();
+
+//! @}
+
+// ----------------------------------------------------------
+// 						game status
+// ----------------------------------------------------------
+
+/*! @{
+	\anchor game_status_func
+	\name Game Status Information
+*/
+
+/*! \brief get own score
+	\sa getOppScore()
+	\sa getScoreToWin()
+*/
+int getScore();
+
+/*! \brief get opponent's score
+	\sa getScore()
+	\sa getScoreToWin()
+*/
+int getOppScore();
+
+/*! \brief score required for winning
+	\sa getScore()
+	\sa getOppScore()
+*/
+int getScoreToWin();
+
+//! \brief game time passed so far
+//!	\return game time in seconds
+int getGameTime();
+
+//! @}
+
+// ----------------------------------------------------------
+// 						estimations
+// ----------------------------------------------------------
+
+/*! @{
+	\anchor estim_func
+	\name Calculation/Estimation Functions
+*/
+
+/*!	\brief estimates ball impact on ground
+	\details Calculates the position where the ball is going to
+			hit the ground. Ignores bounces with walls and the
+			net.
+	\deprecated This funcion is relatively useless as both its
+				purpose (calculating ground impace, where it is
+				already to late to catch the ball) and its 
+				calculation itself (ignoring bounces) are not good.
+				As a consequence, it is hardly used in the current
+				bots so it might be removed in one of the next releases.
+	\return x component of the estimated position
+	\sa predictImpact
+*/
+float estimate();
+
+/*! \brief estimates x position after certain time
+	\details calculates the estimated x position of the ball after
+			\p time steps, ignoring bounces with walls and net
+	\param time Number of steps to anticipate
+	\deprecated use predictx() for more accurate estimations
+	\sa estimx()
+*/
+float estimx(int time);
+/*! \brief estimates y position after certain time
+	\details calculates the estimated y position of the ball after
+			\p time steps, ignoring bounces with walls and net
+	\warning May be a little inaccurate for long timespans as it uses
+				explicit formulars instead of step-by-step simulation
+	\param time Number of steps to anticipate
+	\deprecated use predicty() for more accurate estimations
+	\sa estimy()
+*/
+float estimy(int time);
+
+/*!	\brief estimates ball impact on blobby head
+	\details Calculates the position where the ball will be
+				on height with the blobby head. Takes bounces
+				with the walls into account.
+	\return x component of the calculated position
+	\sideeffect Sets \ref FLAG_BOUNCE to true if ball hits a wall before
+				it reaches its destination.
+*/
+float predictImpact();
+
+/*!	\brief estimates time ball need to hit net top
+	\details Reckons the time the ball needs to hit the net's
+			center the next time. Collisions with blobbys, walls
+			or the ned rod are not calculated.
+	\attention extensive use may need a lot of cpu power
+*/
+float nettime();
+
+// ----------------------------------------------------------
+// spec in development
+// ----------------------------------------------------------
+
+/*!	\brief predicts ball position
+	\details Calculates the position the ball will have after \p
+			time steps, taking into account bounces with walls
+			and a simplified model for the net (i.e., the more
+			complicated collision with the net top is diregarded).
+	\warning 
+			As this uses explicit formulas instead of simulating
+			step by step, the results may slightly vary from 
+			the real values.
+	\sideeffect Sets \ref FLAG_BOUNCE to true if ball hits a wall 
+				during the considered timespan.
+	\sa predicty(int time);
+*/
+float predictx(int time);
+
+/*!	\brief predicts ball position
+	\details Calculates the position the ball will have after \p
+			time steps, taking into account bounces with walls
+			and a simplified model for the net (i.e., the more
+			complicated collision with the net top is diregarded).
+	\warning 
+			As this uses explicit formulas instead of simulating
+			step by step, the results may slightly vary from 
+			the real values.
+	\sideeffect Sets \ref FLAG_BOUNCE to true if ball hits a wall 
+				during the considered timespan.
+	\sa predictx(int time);
+*/
+float predicty(int time);
+
+/*!	\brief time ball needs to position
+	\details Calculates the duration until the ball reaches a certain 
+			position the next time. Bounces with the wall and net rod
+			are calculated correctly, net top is disregarded.			
+	\sideeffect Sets \ref FLAG_BOUNCE to true if ball hits a wall before
+				reaching its destination.
+	\sa timetoy(float target)
+*/
+float timetox(float target);
+/*!	\brief time ball needs to position
+	\details Calculates the duration until the ball reaches a certain 
+			position the next time. Bounces with the wall and net rod
+			are calculated correctly, net top is disregarded.			
+	\sideeffect Sets \ref FLAG_BOUNCE to true if ball hits a wall before
+				reaching its destination.
+	\sa timetoy(float target)
+*/
+float timetoy(float target);
+
+/*!	\brief x when ball reaches certain y
+	\details caluclates the x coordinate the ball has when it
+			reaches \p target. Equivalent to predictx(timetoy(target))
+	\sideeffect Sets \ref FLAG_BOUNCE to true if ball hits a wall before
+				reaching its destination.
+	\sa yatx
+*/
+float xaty(float target);
+
+/*!	\brief y when ball reaches certain x
+	\details caluclates the y coordinate the ball has when it
+			reaches \p target. Equivalent to predicty(timetox(target))
+	\sideeffect Sets \ref FLAG_BOUNCE to true if ball hits a wall before
+				reaching its destination.
+	\sa xaty
+*/
+float yatx(float target);
+
+/*! \brief time the blobby needs to reach \p target
+*/
+float blobtimetox(float target);
+/*! \brief time the blobby needs to reach \p target. 
+	\details calculates the time the blobby needs to 
+			reach a certain height. It is assumed that
+			jump() is called incessantly.
+*/
+float blobtimetoy(float target);
+
+/*! \brief time till next event
+	\details calculates when the next event will occur.
+			in this context, event means bouncing against
+			the wall, the net or hitting the ground. 
+	\sideeffect Sets \ref FLAG_BOUNCE to true if next event
+				is hitting wall or net.
+*/
+float nextevent();
+
+//! @}
+
+// ----------------------------------------------------------
+// 					functions to be implemented by script
+// ----------------------------------------------------------
+
+/*! @{
+	\anchor script_func 
+	\name Script Functions
+	These functions are to be implemented by the scripter. \n They 
+	create the bot behaviour and allow response to certain events. \n
+	Some of them are required for a working bot and marked with 
+	\b required.
+*/
+
+/*!	\brief function for serving
+	\details Called when the ball went down and the controlled
+	blob has to serve it next.
+	\param ballready true when ball is placed
+	\attention \b required
+*/
+
+void OnServe(bool ballready);
+/*!	\brief Oppenent is serving
+	\details Called after balldown when the opponent has to
+				serve the next ball
+*/
+void OnOpponentServe();
+
+/*!	\brief Mainloop function
+	\details Called each step during the normal game
+	\attention \b required
+*/
+void OnGame();
+
+/*!	\brief ball bounce event
+	\details Called when ball trajectory changes 
+			(i.e. ball hits border/net/blobby)
+*/
+void OnBounce();
+
+//! @}
+
+// ----------------------------------------------------------
+// |					constants				            |
+// ----------------------------------------------------------
+
+//! width of the playing field
+const float CONST_FIELD_WIDTH 			= 800;
+//! y coordinate of the gound plane
+const float CONST_GROUND_HEIGHT 		= 100;
+//! strenght of the gravity that affects the ball
+const float CONST_BALL_GRAVITY 			=  -0.28;
+//! radius of ball
+const float CONST_BALL_RADIUS 			=  31.5;
+//! start velocity of jumping blobby
+const float CONST_BLOBBY_JUMP 			=  15.1;
+//! radius of the lower sphere of the blobby
+const float CONST_BLOBBY_BODY_RADIUS 	=  33;
+//! radius of the upper sphere of the blobby
+const float CONST_BLOBBY_HEAD_RADIUS 	=  25;
+//! height of the blobby
+const float CONST_BLOBBY_HEIGHT 		=  89;
+//! gravity that affects the blobby if jump() is not called.
+//! otherwise, half of this value is used
+const float CONST_BLOBBY_GRAVITY 		=  -0.88;
+//! y coordinate of the top of the net
+const float CONST_NET_HEIGHT 			= 316;
+//! radius of the net / half the breadth
+const float CONST_NET_RADIUS 			=   7;
+
+// ----------------------------------------------------------
+// |					variables				            |
+// ----------------------------------------------------------
+
+/*! \brief wall bounce calculated?
+	\details Is set by some functions to indicate whether
+			a collision with the wall had to be taken 
+			into account, i.e. the ball hits a wall 
+			during the processed timespan.
+*/
+extern bool FLAG_BOUNCE;
+
+//! @}
+
+// ----------------------------------------------------------
+// |					tutorial				            |
+// ----------------------------------------------------------
+
+/*! \mainpage
+	\page tutorial
+	In diesem Tutorial werden die Grundlagen von Lua und der Botprogrammierung
+	von Blobby Volley 2 erläutert. Für weiterführende Informationen gibt es die
+	Dokumentation der Script-API. \n
+
+	Für Leute, die noch nie programmiert haben, empfehle ich folgendes Tutorial,
+	um die wichtigsten Grundlagen zu erlernen:
+	http://robertico.ro.funpic.de/index.php \n
+
+	Vor der Programmierung ist zu beachten, dass Blobby-Skripte in 
+	'data/scripts' abgelegt werden müssen und die Dateiendung '.lua' tragen
+	müssen, um vom Spiel erkannt zu werden \n
+
+	Für ein gültiges Blobby-Script müsst ihr 3 Funktionen festlegen: \n
+
+	\code
+	function OnServe(parameter)
+	  -- Wird aufgerufen wenn der Ball abgepfiffen wurde und man selber angeben
+	  -- soll. Der Parameter gibt an, ob der Ball schon in der Schwebe plaziert ist
+	end
+
+	function OnOpponentServe()
+	  -- Wird aufgerufen wenn der Gegner angeben soll
+	end
+
+	function OnGame()
+	  -- Wird ansonsten während des gesamten Spieles aufgerufen
+	  -- Mit -- werden übrigens Kommentare markiert, solltet ihr es noch nicht bemerkt haben ;D
+	end
+	\endcode
+
+	Bevor ihr jetzt loslegt, noch etwas zum Koordinatensystem:
+	Das Spielfeld ist 800 Einheiten breit und 600 Einheiten hoch, ganz an der
+	alten Blobby-Auflösung orientiert. X wächst dabei nach rechts und Y nach oben.
+	Damit wäre also 0,0 unten links und 800,600 oben rechts.
+	Falls ihr euch wundert dass es keine Möglichkeit gibt die eigene Seite
+	zu bestimmen, das ist Absicht. Programmiert einfach als ob der Bot immer
+	links stehen würde, das Programm dreht gegebenenfalls alle Koordinaten um.
+
+	Ich werde jetzt einfach mal ein Beispiel zeigen, wie ein simpler Bot aufgebaut
+	sein kann:
+
+	\code
+	function OnOpponentServe()
+	  moveto(130) -- Wenn der Gegner spielt, in Ausgangsposition gehen
+	end
+
+	function OnServe(ballready)
+	  moveto(ballx() - 40) -- Etwas links vom Ball hinstellen
+	  if posx() < ballx() - 37 and posx() > ballx() - 43 then
+		   -- Dieser zugegeben etwas komplizierte Ausdruck bewirkt, dass
+		   -- man sich erstmal unterhalb des Balles befinden muss. Leider muss
+		   -- das so aufwendig gemacht werden, weil moveto() niemals eine Stelle
+		   -- ganz exakt erreicht.
+		if ballready then 
+		  jump() -- Natürlich nur springen wenn der Ball schon bereitsteht
+		end
+	  end
+	end
+
+	function OnGame()
+	  if ballx() < 400 then -- Wenn sich der Ball links von der Mitte,
+							-- also auf unserer Seite befindet
+		moveto(ballx() - 20) -- Etwas links vom Ball ausrichten
+		if ballx() < posx() + 50 then
+		  jump() -- Wenn der Ball kurz vor oder hinter dem Blobby ist, springen
+		end
+	  end
+	end
+	\endcode
+
+
+	Ich hoffe, dieses Tutorial hat einen Eindruck entwickelt, wie man einen Bot
+	programmiert. Für weitere Informationen gibt es wie gesagt die 
+	Script-API-Doku. Um fortgeschrittene Bots zu programmieren, solltet ihr
+	auch nicht immer blind dem Ball hinterherrennen, sondern mit den 
+	estim*-Funktionen Vorhersagen machen.
+	Ansonsten kann ich euch nur als Tip mitgeben, euren Bot immer wieder zu
+	beobachten und gegen jede gefundene Schwäche einen Schutzmechanismus
+	zu entwickeln.
+
+*/

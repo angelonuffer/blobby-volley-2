@@ -1,0 +1,37 @@
+TODO:
+
+coderework:
+- new clean rendererarchitecture
+- multithreading
+	fps independent physics
+- new gui system
+- more lua scripting
+
+features:
+- option for 3 types of shadow (off, pixelshadow, alphablendingshadow)
+- lobbysystem
+- full unicode support (e.g. for Russian characters)
+- improve replays (fast forward, rewind, etc)
+- improve bot system (more commands etc)
+- more dedicated server options (black/whitelist, statistics, etc)
+
+bugs:
+- mouse-input does not work very good in online-game
+- net bugs:
+ - squeezing ball through blocking blobby ?  
+     Please try to verify this
+
+- only two hits acceptet under special circumstances?
+	 Replay which shows this problem
+
+- mouse freezed in upper right corner after leaving the game (fullscreen mode, SDL)
+
+data:
+- new smaller font (current one too small?)
+- monochrome font
+- more translation
+
+FOR 0.9 final:
+ auto select chat editbox
+ mouse freeze bug? hopefully
+ esc key in chat

@@ -1,0 +1,11 @@
+You must have CMake installed.
+Then execute:
+
+cmake .
+make
+
+Then you can just execute blobby. Just type this in the package directory:
+src/blobby
+
+If you want install blobby, type this as root (NOTE: This is experimental):
+make install

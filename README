@@ -1,0 +1,30 @@
+==============================================================
+====================Blobby Volley 2 README====================
+=============The head-to-head multiplayer ball game===========
+==============================================================
+=================http://blobby.sourceforge.net================
+==============================================================
+
+System requirements:
+
+Either Windows 95 or later, or Linux
+Graphics card with DirectDraw-Acceleration (on Windows)
+OpenGL-compliant graphics card recommended (both systems)
+
+You can hire/buy banner ads of the new background (strand1.bmp).
+Contact us per EMail: Daniel-Knobe@web.de
+
+The "Dedicaded Server" runs with a Gamespeed of 100%, which means 75 FPS
+
+The Port for the Server is 1234.
+
+Source code:
+
+On Linux, with Subversion installed just type:
+ svn co https://svn.sourceforge.net/svnroot/blobby blobby
+
+For further instructions see
+http://sourceforge.net/svn/?group_id=169341
+
+Credits:
+See AUTHORS
