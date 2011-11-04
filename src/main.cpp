@@ -193,10 +193,26 @@ int main(int argc, char* argv[])
 
         if (argc == 3)
         {
-            gameConfig.setString("left_script_name", argv[1]);
-            gameConfig.setString("right_script_name", argv[2]);
-            gameConfig.setString("left_player_human", "false");
-            gameConfig.setString("right_player_human", "false");
+            if (strstr(argv[1], ".lua"))
+            {
+                gameConfig.setString("left_player_human", "false");
+                gameConfig.setString("left_script_name", argv[1]);
+            }
+            else
+            {
+                gameConfig.setString("left_player_human", "true");
+                gameConfig.setString("left_player_name", argv[1]);
+            }
+            if (strstr(argv[2], ".lua"))
+            {
+                gameConfig.setString("right_player_human", "false");
+                gameConfig.setString("right_script_name", argv[2]);
+            }
+            else
+            {
+                gameConfig.setString("right_player_human", "true");
+                gameConfig.setString("right_player_name", argv[2]);
+            }
             gameConfig.saveFile("config.xml");
             State::setCurrentState(new LocalGameState(), true);
         }
