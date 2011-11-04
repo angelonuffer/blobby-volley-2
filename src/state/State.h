@@ -35,6 +35,7 @@ private:
 protected:
     State();
     void deleteCurrentState();
+    static void setCurrentState(State* newState);
     
     // static protected helper function that 
     // draws the game. It is in State because
@@ -42,10 +43,11 @@ protected:
     // LocalGameState, NetworkGameState and ReplayMenuState
     static void presentGame(const DuelMatch& match);
 public:
+    bool quitOnEnd;
     virtual ~State() {}
     virtual void step() = 0;
     static State* getCurrentState();
-    static void setCurrentState(State* newState);
+    static void setCurrentState(State* newState, bool quitOnEnd);
 };
 
 class MainMenuState : public State

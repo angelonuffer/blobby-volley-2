@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
             gameConfig.setString("left_player_human", "false");
             gameConfig.setString("right_player_human", "false");
             gameConfig.saveFile("config.xml");
-            State::setCurrentState(new LocalGameState());
+            State::setCurrentState(new LocalGameState(), true);
         }
 
         int running = 1;

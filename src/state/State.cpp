@@ -59,6 +59,12 @@ void State::setCurrentState(State* newState){
     mCurrentState = newState;
 }
 
+void State::setCurrentState(State* newState, bool quitOnEnd)
+{
+    setCurrentState(newState);
+    mCurrentState->quitOnEnd = quitOnEnd;
+}
+
 void State::presentGame(const DuelMatch& match)
 {
     RenderManager& rmanager = RenderManager::getSingleton();
