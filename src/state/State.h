@@ -31,62 +31,62 @@ class ReplayRecorder;
 class State
 {
 private:
-	static State* mCurrentState;
+    static State* mCurrentState;
 protected:
-	State();
-	void deleteCurrentState();
-	void setCurrentState(State* newState);
-	
-	// static protected helper function that 
-	// draws the game. It is in State because
-	// this functionality is shared by 
-	// LocalGameState, NetworkGameState and ReplayMenuState
-	static void presentGame(const DuelMatch& match);
+    State();
+    void deleteCurrentState();
+    
+    // static protected helper function that 
+    // draws the game. It is in State because
+    // this functionality is shared by 
+    // LocalGameState, NetworkGameState and ReplayMenuState
+    static void presentGame(const DuelMatch& match);
 public:
-	virtual ~State() {}
-	virtual void step() = 0;
-	static State* getCurrentState();
+    virtual ~State() {}
+    virtual void step() = 0;
+    static State* getCurrentState();
+    static void setCurrentState(State* newState);
 };
 
 class MainMenuState : public State
 {
 private:
 public:
-	MainMenuState();
-	virtual ~MainMenuState();
-	virtual void step();
+    MainMenuState();
+    virtual ~MainMenuState();
+    virtual void step();
 };
 
 class ReplayMenuState : public State
 {
 public:
-	ReplayMenuState();
-	virtual void step();
+    ReplayMenuState();
+    virtual void step();
 private:
-	void loadCurrentReplay();
-	DuelMatch* mReplayMatch;
-	ReplayRecorder* mReplayRecorder;
+    void loadCurrentReplay();
+    DuelMatch* mReplayMatch;
+    ReplayRecorder* mReplayRecorder;
 
-	std::vector<std::string> mReplayFiles;
-	int mSelectedReplay;
-	bool mReplaying;
-	bool mChecksumError;
-	
-	int mPlayButton;
-	int mCancelButton;
-	int mDeleteButton;
+    std::vector<std::string> mReplayFiles;
+    int mSelectedReplay;
+    bool mReplaying;
+    bool mChecksumError;
+    
+    int mPlayButton;
+    int mCancelButton;
+    int mDeleteButton;
 
-	Player mLeftPlayer;
-	Player mRightPlayer;
+    Player mLeftPlayer;
+    Player mRightPlayer;
 };
 
 class CreditsState : public State
 {
 public:
-	CreditsState();
-	virtual void step();
+    CreditsState();
+    virtual void step();
 private:
-	float mYPosition;
+    float mYPosition;
 };
 
 
