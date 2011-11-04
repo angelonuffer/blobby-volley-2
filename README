@@ -21,7 +21,7 @@ The Port for the Server is 1234.
 Source code:
 
 On Linux, with Subversion installed just type:
- svn co https://svn.sourceforge.net/svnroot/blobby blobby
+ svn co https://blobby.svn.sourceforge.net/svnroot/blobby blobby
 
 For further instructions see
 http://sourceforge.net/svn/?group_id=169341
